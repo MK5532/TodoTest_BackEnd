@@ -25,10 +25,45 @@ public class TodoService {
 		return repository.findById(entity.getId());
 	}
 
-	public List<TodoEntity>retrieve(final String userId){
+	public List<TodoEntity> retrieve(final String userId) {
 		return repository.findByUserId(userId);
 	}
-	
+
+	public Optional<TodoEntity> update(final TodoEntity entity) {
+		// Validations
+		validate(entity);
+		if (repository.existsById(entity.getId())) {
+			repository.save(entity);
+		} else
+			throw new RuntimeException("Unknown id");
+
+		return repository.findById(entity.getId());
+	}
+
+	public Optional<TodoEntity> updateTodo(final TodoEntity entity) {
+		// Validations
+		validate(entity);
+
+		// 테이블에서 id에 해당하는 데이터셋을 가져온다
+		final Optional<TodoEntity> original = repository.findById(entity.getId());
+
+		// original에 담겨진 내용을 todo에 할당하고 title, done 값을 변경한다.
+		original.ifPresent(todo -> {
+			todo.setTitle(entity.getTitle());
+			todo.setDone(entity.isDone());
+			repository.save(todo);
+		});
+		/*
+		 * 위의 람다식과 동일한 표현 if(original.isPresent()){ 
+		 * final TodoEntity todo =
+		 * orginal.get(); 
+		 * todo.setTitle(entity.getTitle());
+		 * todo.setDone(entity.isDone()); 
+		 * repository.save(todo);
+		 */
+		return repository.findById(entity.getId());
+	}
+
 	public void validate(final TodoEntity entity) {
 		if (entity == null) {
 			log.warn("Entity cannot be null");
