@@ -1,5 +1,6 @@
 package com.example.Todo.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,10 @@ public class TodoService {
 		return repository.findById(entity.getId());
 	}
 
+	public List<TodoEntity>retrieve(final String userId){
+		return repository.findByUserId(userId);
+	}
+	
 	public void validate(final TodoEntity entity) {
 		if (entity == null) {
 			log.warn("Entity cannot be null");
