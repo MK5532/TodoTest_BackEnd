@@ -19,9 +19,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception{
-		http.cors().and().csrf().disable().sessionManagement()
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-		.authorizeRequests().antMatchers("/", "/auth/**").permitAll().anyRequest().authenticated();
+		http.cors()
+		.and()
+		.csrf()
+		.disable()
+		.sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
+		.authorizeRequests()
+		.antMatchers("/", "/auth/**", "/h2-console/**").permitAll()
+		.anyRequest()
+		.authenticated()
+		.and()
+		.headers().frameOptions().disable();
 		
 		http.addFilterAfter(jwtAuthenticationFilter, CorsFilter.class);
 	}
